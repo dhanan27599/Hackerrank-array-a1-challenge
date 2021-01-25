@@ -13,31 +13,25 @@ import static java.util.stream.Collectors.toList;
 class Result {
 
     /*
-     * Complete the 'countingValleys' function below.
+     * Complete the 'pickingNumbers' function below.
      *
      * The function is expected to return an INTEGER.
-     * The function accepts following parameters:
-     *  1. INTEGER steps
-     *  2. STRING path
+     * The function accepts INTEGER_ARRAY a as parameter.
      */
 
-    public static int countingValleys(int steps, String path) {
+    public static int pickingNumbers(List<Integer> a) {
     // Write your code here
-        int levels = 0;
-        int valleys = 0;
-        int i = 0;
-        while(i < steps) {
-            char c = path.charAt(i++);
-            if(c == 'U') {
-                levels++;
-            } else {
-                if(levels == 0) {
-                    valleys++;
-                }
-                levels--;
-            }
+        int[] cache = new int[1000];
+        int ans = 0;
+        
+        for(int i = 0 ; i < a.size() ; i++) {
+            cache[a.get(i)]++;
         }
-        return valleys;
+        for(int i = 1 ; i < 1000 ; i++) {
+            ans = Math.max(ans, cache[i - 1] + cache[i]);
+        }
+        
+        return ans;
     }
 
 }
@@ -47,11 +41,13 @@ public class Solution {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
 
-        int steps = Integer.parseInt(bufferedReader.readLine().trim());
+        int n = Integer.parseInt(bufferedReader.readLine().trim());
 
-        String path = bufferedReader.readLine();
+        List<Integer> a = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+            .map(Integer::parseInt)
+            .collect(toList());
 
-        int result = Result.countingValleys(steps, path);
+        int result = Result.pickingNumbers(a);
 
         bufferedWriter.write(String.valueOf(result));
         bufferedWriter.newLine();
